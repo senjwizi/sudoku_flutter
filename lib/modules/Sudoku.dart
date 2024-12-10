@@ -2,9 +2,11 @@ import 'package:sudoku_flutter/modules/Cell.dart';
 import 'package:sudoku_flutter/modules/SudokuGenerator.dart';
 
 class Sudoku {
-  List cells = [];
+  List<Cell> cells = [];
   Cell? selectedCell;
-  SudokuGenerator sudokuGenerator = SudokuGenerator(3);
+  bool notesMode = false;
+  SudokuGenerator? _sudokuGenerator;
+  //Cell? getSelectedCell() => selectedCell;
 
   Sudoku() {
     _initTable();
@@ -13,7 +15,7 @@ class Sudoku {
   void _initTable() {
     cells = List.generate(
         81,
-        (int i) => new Cell(
+        (int i) => Cell(
               numbersInCell: List<int>.filled(10, 0, growable: false),
               row: i ~/ 9,
               col: i % 9,
@@ -21,34 +23,71 @@ class Sudoku {
               selected: false,
               subSelected: false,
               sameNumber: false,
+              correct: true,
+              //getSelectedCell: () => selectedCell,
             ));
 
-    //Generate
 
-    for (int i = 0; i < 81; i++) {
-      cells[i].numbersInCell[0] = sudokuGenerator.getNumber(i);
+    //Generate
+    _sudokuGenerator = SudokuGenerator(3);
+    //cells = _sudokuGenerator!.playTable;
+
+    for (var i = 0; i < 81; i++) {
+      cells[i].numbersInCell[0] = _sudokuGenerator!.getNumber(i);
     }
   }
 
+  void changeNotesMode()
+  {
+    notesMode = !notesMode;
+  }
+
+  void setNumber(int number)
+  {
+    if (selectedCell?.numbersInCell[notesMode ? number : 0] == number) {
+      selectedCell?.numbersInCell[notesMode ? number : 0] = 0;
+    } else {
+      selectedCell?.numbersInCell[notesMode ? number : 0] = number;
+    }
+    _sudokuGenerator!.checkCorrect(selectedCell!.col, selectedCell!.row);
+    _clearSelected();
+    _updateSelected();
+  }
+
+  void clearCell()
+  {
+    selectedCell?.numbersInCell = List<int>.filled(10, 0, growable: false);
+    _clearSelected();
+    _updateSelected();
+  }
+
   void selectCell(int index) {
+    _clearSelected();
+    selectedCell = this.cells[index];
+    selectedCell!.selected = true;
+    _updateSelected();
+  }
+
+  void _clearSelected() {
     if (selectedCell != null) {
       selectedCell!.selected = false;
       cells
           .where((c) => c.subSelected == true || c.sameNumber == true)
           .forEach((c) {c.subSelected = false; c.sameNumber = false;});
     }
-    selectedCell = cells[index];
-    selectedCell!.selected = true;
+  }
+
+  void _updateSelected() {
     cells
         .where((c) =>
             c.area == selectedCell!.area ||
             c.row == selectedCell!.row ||
             c.col == selectedCell!.col)
         .forEach((c) => c.subSelected = true);
-      cells
-        .where((c) =>
-            c.numbersInCell[0] == selectedCell!.numbersInCell[0])
-        .forEach((c) => c.sameNumber = true);
+    cells
+      .where((c) =>
+          c.numbersInCell[0] == selectedCell!.numbersInCell[0])
+      .forEach((c) => c.sameNumber = true);
   }
 
   void showTable() {

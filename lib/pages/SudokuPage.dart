@@ -21,31 +21,89 @@ class _SudokuPageState extends State<SudokuPage> {
 
 
           //SUDOKU TABLE
-          Expanded(
-              child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 9),
-                  itemCount: 81,
-                  itemBuilder: (context, index) => GestureDetector(
-                    onTap: () => SelectCell(index),
-                    child: CellWidget(cell: sudoku.cells[index],),
+          Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Container(
+
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(23),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color.fromARGB(255, 20, 127, 221).withOpacity(0.3),
+                    spreadRadius: 6,
+                    blurRadius: 8,
+                  )
+                ]
+              ),
+              child: Expanded(
+                child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 9),
+                    itemCount: 81,
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () => selectCell(index),
+                      child: CellWidget(cell: sudoku.cells[index],),
+                    ),
                   ),
-                ),
+              ),
+            ),
           ),
 
           //GAME CONTROLL
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              IconButton(
+                onPressed: clear, 
+                icon: const Icon(Icons.clear),
+                color:Colors.grey,
+              ),
+              IconButton(
+                onPressed: changeMode, 
+                icon: const Icon(Icons.mode),
+                color: sudoku.notesMode ? Colors.blue : Colors.grey,
+              ),
+
+              //Numbers
               TextButton(
-                style: TextButton.styleFrom(
-                  textStyle: const TextStyle(
-                    fontSize: 20,
-                  )
-                ),
-                onPressed: onPressed, 
-                child: const Text("1")),
-                IconButton(onPressed: onPressed, icon: const Icon(Icons.arrow_back_ios_new))
+                onPressed: () => setNumber(1), 
+                child: const Text("1"),
+              ),
+                            TextButton(
+                onPressed: () => setNumber(2), 
+                child: const Text("2"),
+              ),
+                            TextButton(
+                onPressed: () => setNumber(3), 
+                child: const Text("3"),
+              ),
+                            TextButton(
+                onPressed: () => setNumber(4), 
+                child: const Text("4"),
+              ),
+                            TextButton(
+                onPressed: () => setNumber(5), 
+                child: const Text("5"),
+              ),
+                            TextButton(
+                onPressed: () => setNumber(6), 
+                child: const Text("6"),
+              ),
+                            TextButton(
+                onPressed: () => setNumber(7), 
+                child: const Text("7"),
+              ),
+                            TextButton(
+                onPressed: () => setNumber(8), 
+                child: const Text("8"),
+              ),
+                            TextButton(
+                onPressed: () => setNumber(9), 
+                child: const Text("9"),
+              ),
+              
             ],
           )
         ],
@@ -54,12 +112,22 @@ class _SudokuPageState extends State<SudokuPage> {
 
   }
 
-  void onPressed()
+  void changeMode()
   {
-
+    setState(() => sudoku.changeNotesMode());
   }
 
-  void SelectCell(int index)
+  void clear()
+  {
+    setState(() => sudoku.clearCell());
+  }
+
+  void setNumber(int number)
+  {
+    setState(() => sudoku.setNumber(number));
+  }
+
+  void selectCell(int index)
   {
     setState(() {
       sudoku.selectCell(index);

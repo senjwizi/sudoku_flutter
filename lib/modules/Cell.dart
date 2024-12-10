@@ -1,11 +1,16 @@
+import 'package:flutter/material.dart';
+
 class Cell {
-  List numbersInCell;
+  List<int> numbersInCell;
   int row;
   int col;
   int area;
   bool selected;
   bool subSelected;
   bool sameNumber;
+  bool correct;
+  //Cell? selectedCell;
+  //final Cell? Function() getSelectedCell;
 
   Cell({
     required this.numbersInCell,
@@ -15,13 +20,21 @@ class Cell {
     required this.selected,
     required this.subSelected,
     required this.sameNumber,
+    required this.correct,
+    //required this.selectedCell,
+    //required this.getSelectedCell,
   });
 
-  void setNumber(int number) {
-    if (numbersInCell[number] != 0) {
-      numbersInCell[number] = 0;
+  void updateHighlight(Cell selectedCell){
+    if (numbersInCell.contains(selectedCell.numbersInCell[0])) {
+      sameNumber = true;
     } else {
-      numbersInCell[number] = number;
+      subSelected = true;
     }
+  }
+
+  void clear() {
+    selected = false;
+    subSelected = false;
   }
 }
