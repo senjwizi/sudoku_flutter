@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:sudoku_flutter/modules/SudokuSolver.dart';
+
 class SudokuGenerator {
   final List _table = List<List>.generate(
       9,
@@ -7,14 +9,15 @@ class SudokuGenerator {
           growable: false),
       growable: false);
 
-  List playTable = List<int>.filled(81, 0, growable: false);
+  List<int> playTable = List<int>.filled(81, 0, growable: false);
+  int _dificult = 0;
 
   SudokuGenerator(int dif) {
     generate(dif);
   }
 
   int getNumber(int index) {
-    return _table[index ~/ 9][index % 9];
+    return playTable[index];
   }
 
   bool checkCorrect(int x, int y)
@@ -22,8 +25,13 @@ class SudokuGenerator {
     return (playTable[y * 9 + x] == _table[y][x]);
   }
 
+  void setNumber(int row, int col, int value) {
+    playTable[row * 9 + col] = value;
+  }
+
   void generate(int dif) {
     const int randomCount = 10;
+    _dificult = dif;
 
     List<void Function()> functions = [
       _swapLineInArea,
@@ -35,8 +43,48 @@ class SudokuGenerator {
 
     Random random = Random();
 
-    for (var i = 0; i < randomCount; i++) {
+    for (var i = 0; i < 0; i++) {
       functions[random.nextInt(functions.length)]();
+    }
+
+    fillPlayTable();
+    createPlayTable();
+  }
+
+  void fillPlayTable() {
+    for (var row = 0; row < 9; row++) {
+      for (var col = 0; col < 9; col++) {
+        playTable[row * 9 + col] = _table[row][col];
+      }
+    }
+  }
+
+  void createPlayTable() {
+
+    List<bool> lookPos = List<bool>.filled(81, false,growable: false);
+    int iterator = 0;
+    int difficult = 81;
+    Random random = Random();
+    SudokuSolver sudokuSolver = SudokuSolver();
+
+
+    while (difficult > _dificult) {
+      int index = random.nextInt(81);
+
+      if (!lookPos[index]) {
+        iterator++;
+        lookPos[index] = true;
+
+        var temp = playTable[index];
+        playTable[index] = 0;
+        difficult--;
+
+
+        if (sudokuSolver.solve(playTable) == false){
+          playTable[index] = temp;
+          difficult++;
+        }
+      }
     }
   }
 

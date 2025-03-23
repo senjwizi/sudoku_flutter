@@ -1,40 +1,44 @@
 import 'package:flutter/material.dart';
 
 class Cell {
-  List<int> numbersInCell;
+  int value;
+  List<bool> notes;
+  int selectedNumber = 0;
   int row;
   int col;
   int area;
   bool selected;
   bool subSelected;
-  bool sameNumber;
   bool correct;
-  //Cell? selectedCell;
-  //final Cell? Function() getSelectedCell;
+
 
   Cell({
-    required this.numbersInCell,
+    required this.value,
+    required this.notes,
     required this.row,
     required this.col,
     required this.area,
     required this.selected,
     required this.subSelected,
-    required this.sameNumber,
     required this.correct,
-    //required this.selectedCell,
-    //required this.getSelectedCell,
   });
 
   void updateHighlight(Cell selectedCell){
-    if (numbersInCell.contains(selectedCell.numbersInCell[0])) {
-      sameNumber = true;
-    } else {
-      subSelected = true;
-    }
+    subSelected = 
+      row == selectedCell.row || 
+      col == selectedCell.col || 
+      area == selectedCell.area;
+    selectedNumber = selectedCell.value;
+  }
+
+  void clearHighlight() {
+    selected = false;
+    subSelected = false;
+    selectedNumber = 0;
   }
 
   void clear() {
-    selected = false;
-    subSelected = false;
+    value = 0;
+    notes = List.filled(9, false, growable: false);
   }
 }

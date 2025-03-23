@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_flutter/components/CellWidget.dart';
+import 'package:sudoku_flutter/components/ControlNumberButton.dart';
 import 'package:sudoku_flutter/modules/Sudoku.dart';
 
 class SudokuPage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _SudokuPageState extends State<SudokuPage> {
       body: Column(
         children: [
           //GAME INFO 
-
+          
 
           //SUDOKU TABLE
           Padding(
@@ -44,7 +45,7 @@ class _SudokuPageState extends State<SudokuPage> {
                     itemCount: 81,
                     itemBuilder: (context, index) => GestureDetector(
                       onTap: () => selectCell(index),
-                      child: CellWidget(cell: sudoku.cells[index],),
+                      child: CellWidget(cell: sudoku.cells[index]),
                     ),
                   ),
               ),
@@ -53,7 +54,28 @@ class _SudokuPageState extends State<SudokuPage> {
 
           //GAME CONTROLL
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //Numbers
+              ControlNumberButton(number: "1", onTap: () => setNumber(1)),
+              ControlNumberButton(number: "2", onTap: () => setNumber(2)),
+              ControlNumberButton(number: "3", onTap: () => setNumber(3)),
+              ControlNumberButton(number: "4", onTap: () => setNumber(4)),
+              ControlNumberButton(number: "5", onTap: () => setNumber(5)),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //Numbers
+              ControlNumberButton(number: "6", onTap: () => setNumber(6)),
+              ControlNumberButton(number: "7", onTap: () => setNumber(7)),
+              ControlNumberButton(number: "8", onTap: () => setNumber(8)),
+              ControlNumberButton(number: "9", onTap: () => setNumber(9)),
+            ],
+          ),
+          //TOOLS 
+          Row(
             children: [
               IconButton(
                 onPressed: clear, 
@@ -65,45 +87,6 @@ class _SudokuPageState extends State<SudokuPage> {
                 icon: const Icon(Icons.mode),
                 color: sudoku.notesMode ? Colors.blue : Colors.grey,
               ),
-
-              //Numbers
-              TextButton(
-                onPressed: () => setNumber(1), 
-                child: const Text("1"),
-              ),
-                            TextButton(
-                onPressed: () => setNumber(2), 
-                child: const Text("2"),
-              ),
-                            TextButton(
-                onPressed: () => setNumber(3), 
-                child: const Text("3"),
-              ),
-                            TextButton(
-                onPressed: () => setNumber(4), 
-                child: const Text("4"),
-              ),
-                            TextButton(
-                onPressed: () => setNumber(5), 
-                child: const Text("5"),
-              ),
-                            TextButton(
-                onPressed: () => setNumber(6), 
-                child: const Text("6"),
-              ),
-                            TextButton(
-                onPressed: () => setNumber(7), 
-                child: const Text("7"),
-              ),
-                            TextButton(
-                onPressed: () => setNumber(8), 
-                child: const Text("8"),
-              ),
-                            TextButton(
-                onPressed: () => setNumber(9), 
-                child: const Text("9"),
-              ),
-              
             ],
           )
         ],

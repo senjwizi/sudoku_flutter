@@ -17,13 +17,21 @@ class CellWidget extends StatelessWidget {
     required this.cell,
   });
 
-  Color cellColor() {
+  Color oldcellColor() {
     if (cell.selected == true) {
       return Colors.white;//const Color.fromARGB(255, 70, 163, 245);
     } else if (cell.subSelected == true) {
       return const Color.fromARGB(255, 163, 205, 241);
-    } else if (cell.sameNumber == true) {
+    } else if (cell.selectedNumber != 0) {
       return const Color.fromARGB(255, 125, 157, 185);
+    } else {
+      return Colors.white;
+    }
+  }
+
+  Color cellColor() {
+    if (cell.subSelected == true) {
+      return const Color.fromARGB(255, 163, 205, 241);//const Color.fromARGB(255, 70, 163, 245);
     } else {
       return Colors.white;
     }
@@ -49,7 +57,7 @@ class CellWidget extends StatelessWidget {
     return BorderRadius.zero;
   }
 
-  Border? getBorder() {
+  Border? oldgetBorder() {
     return Border(
           left: cell.col != 0 && cell.col <= 4 ? BorderSide( 
             color: borderColor,
@@ -63,6 +71,20 @@ class CellWidget extends StatelessWidget {
           top: cell.row != 0 && cell.row <= 4 ? BorderSide(
             color: borderColor,
             width: getWidth(cell.row))  : BorderSide.none,
+        );
+  }
+
+    Border? getBorder() {
+    return Border(
+          left: cell.col != 0 ? BorderSide( 
+            color: borderColor,
+            width: getWidth(cell.col))  : BorderSide.none,
+          top: cell.row != 0 ? BorderSide(
+            color: borderColor,
+            width: getWidth(cell.row))  : BorderSide.none,
+
+          right: BorderSide.none, 
+          bottom: BorderSide.none,
         );
   }
 
@@ -92,20 +114,31 @@ class CellWidget extends StatelessWidget {
               color: cellColor(),
               borderRadius: getCorner(cell.col, cell.row),
             ),
-          child: cell.numbersInCell[0] != 0 ? 
+          child: cell.value != 0 ? 
             Center(
-              child: Text(cell.numbersInCell[0].toString()),
+              child: FittedBox(
+                fit: BoxFit.cover, 
+                child: Text(
+                  cell.value.toString(),
+                  style: TextStyle(
+                          fontWeight: cell.value == cell.selectedNumber ? 
+                            FontWeight.bold : 
+                            FontWeight.w100,
+                          color: cell.correct ? Colors.black : Colors.red,
+                          fontSize: 24
+                        )),
+              ),
             ) :
             GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3), 
               itemCount: 9,
               itemBuilder: (context, index) => 
                 Center(
-                  child: cell.numbersInCell[index + 1] != 0 ?
+                  child: cell.notes[index] ?
                   Text( 
-                    cell.numbersInCell[index + 1].toString(),
+                    (index + 1).toString(),
                     style: TextStyle(
-                      fontWeight: cell.numbersInCell[index + 1] == cell.col ? 
+                      fontWeight: index + 1 == cell.selectedNumber ? 
                       FontWeight.bold : 
                       FontWeight.normal,
                     ),
